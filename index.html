@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Is Love? | A Diachronic Corpus-Based Analysis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blush: {
+              50:  '#FFF0F2',
+              100: '#FFD1D7',
+              200: '#FFB3BC',
+              300: '#FF8FA0',
+              400: '#E05A70',
+              500: '#C1274D',
+              600: '#9E1A3C',
+              700: '#7A1030',
+            },
+            cream: '#FDFAF7',
+            linen: '#F5EEE9',
+            plum:  '#2D1B2E',
+            charcoal: '#3D2B3D',
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans:  ['"DM Sans"', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #FDFAF7;
+      color: #3D2B3D;
+      font-family: 'DM Sans', system-ui, sans-serif;
+    }
+
+    /* ---- SIDEBAR NAV ---- */
+    #sidebar {
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    #sidebar.open {
+      transform: translateX(0);
+    }
+    #overlay {
+      transition: opacity 0.3s ease;
+    }
+
+    /* ---- HERO ---- */
+    .hero-gradient {
+      background: linear-gradient(135deg, #FFF0F2 0%, #FFD1D7 40%, #FFE4E9 70%, #FFF8FA 100%);
+    }
+
+    /* ---- GLASS CARD ---- */
+    .glass {
+      background: rgba(255, 255, 255, 0.62);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 209, 215, 0.45);
+    }
+
+    /* ---- DECADE TAB PANEL ---- */
+    .decade-panel { display: none; }
+    .decade-panel.active { display: block; }
+
+    /* ---- DECADE TAB BUTTON ---- */
+    .decade-btn {
+      transition: all 0.25s ease;
+      border-bottom: 3px solid transparent;
+    }
+    .decade-btn.active {
+      border-bottom-color: #C1274D;
+      color: #C1274D;
+      font-weight: 600;
+    }
+    .decade-btn:not(.active):hover {
+      color: #E05A70;
+      border-bottom-color: #FFB3BC;
+    }
+
+    /* ---- FREQUENCY BAR ---- */
+    .freq-bar {
+      height: 10px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #E05A70, #C1274D);
+      transition: width 0.8s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ---- CARD HOVER ---- */
+    .hover-lift {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(192, 39, 77, 0.12);
+    }
+
+    /* ---- STEP CARD ---- */
+    .step-card {
+      border-left: 4px solid #E05A70;
+    }
+
+    /* ---- CONCORDANCE QUOTE ---- */
+    .concordance {
+      border-left: 3px solid #C1274D;
+      background: linear-gradient(90deg, #FFF0F2 0%, transparent 100%);
+    }
+
+    /* ---- TIMELINE BAR ---- */
+    .timeline-bar {
+      background: linear-gradient(90deg, #FFD1D7, #C1274D);
+    }
+
+    /* ---- SECTION DIVIDER ---- */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #FFB3BC 30%, #E05A70 50%, #FFB3BC 70%, transparent);
+    }
+
+    /* ---- SCROLLBAR ---- */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #FFF0F2; }
+    ::-webkit-scrollbar-thumb { background: #E05A70; border-radius: 99px; }
+
+    /* ---- MOBILE MENU ---- */
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); }
+    }
+
+    /* ---- PETAL DECORATION ---- */
+    .petal {
+      opacity: 0.18;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    /* ---- NAV LINK ---- */
+    .nav-link {
+      transition: color 0.2s, padding-left 0.2s;
+    }
+    .nav-link:hover {
+      color: #C1274D;
+      padding-left: 6px;
+    }
+
+    /* ---- EVOLUTION ARROW ---- */
+    .evo-arrow {
+      color: #E05A70;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+<!-- ===================== OVERLAY ===================== -->
+<div id="overlay" class="fixed inset-0 bg-plum/40 z-30 hidden opacity-0" onclick="closeSidebar()"></div>
+
+<!-- ===================== SIDEBAR NAV ===================== -->
+<aside id="sidebar" class="fixed top-0 left-0 h-full w-72 z-40 glass shadow-2xl flex flex-col py-10 px-8 -translate-x-full md:translate-x-0">
+  <!-- Logo / Title -->
+  <div class="mb-10">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-blush-500"><i data-lucide="heart" class="w-5 h-5 fill-current"></i></span>
+      <span class="font-serif font-bold text-lg text-blush-600 tracking-tight">What Is Love?</span>
+    </div>
+    <p class="text-xs text-charcoal/60 leading-relaxed">Corpus Linguistics &amp; SFL Research<br>AB ELS 3-5 · PUP Manila</p>
+  </div>
+
+  <!-- Nav Links -->
+  <nav class="flex-1 flex flex-col gap-1 text-sm font-medium text-charcoal/75">
+    <a href="#hero" class="nav-link flex items-center gap-3 py-2 rounded-lg px-2" onclick="closeSidebar()">
+      <i data-lucide="sparkles" class="w-4 h-4 text-blush-400"></i> Overview
+    </a>
+    <a href="#framework" class="nav-link flex items-center gap-3 py-2 rounded-lg px-2" onclick="closeSidebar()">
+      <i data-lucide="layers" class="w-4 h-4 text-blush-400"></i> Theoretical Framework
+    </a>
+    <a href="#methodology" class="nav-link flex items-center gap-3 py-2 rounded-lg px-2" onclick="closeSidebar()">
+      <i data-lucide="settings-2" class="w-4 h-4 text-blush-400"></i> Methodology
+    </a>
+    <a href="#results" class="nav-link flex items-center gap-3 py-2 rounded-lg px-2" onclick="closeSidebar()">
+      <i data-lucide="bar-chart-2" class="w-4 h-4 text-blush-400"></i> Results &amp; Discussion
+    </a>
+    <a href="#conclusion" class="nav-link flex items-center gap-3 py-2 rounded-lg px-2" onclick="closeSidebar()">
+      <i data-lucide="book-open" class="w-4 h-4 text-blush-400"></i> Conclusion
+    </a>
+    <a href="#dataset" class="nav-link flex items-center gap-3 py-2 rounded-lg px-2" onclick="closeSidebar()">
+      <i data-lucide="database" class="w-4 h-4 text-blush-400"></i> Dataset Access
+    </a>
+  </nav>
+
+  <!-- Footer -->
+  <div class="mt-8 pt-6 border-t border-blush-100 text-xs text-charcoal/45 leading-relaxed">
+    <p>Polytechnic University of the Philippines</p>
+    <p>College of Arts and Letters</p>
+    <p class="mt-1">BA English Language Studies</p>
+  </div>
+</aside>
+
+<!-- ===================== MOBILE TOPBAR ===================== -->
+<header class="md:hidden fixed top-0 left-0 right-0 z-20 glass border-b border-blush-100 flex items-center justify-between px-5 py-3">
+  <div class="flex items-center gap-2">
+    <span class="text-blush-500"><i data-lucide="heart" class="w-4 h-4 fill-current"></i></span>
+    <span class="font-serif font-semibold text-blush-600 text-sm">What Is Love?</span>
+  </div>
+  <button onclick="openSidebar()" class="p-2 rounded-lg hover:bg-blush-50 transition-colors" aria-label="Open menu">
+    <i data-lucide="menu" class="w-5 h-5 text-charcoal"></i>
+  </button>
+</header>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<main class="md:ml-72">
+
+  <!-- ========== HERO ========== -->
+  <section id="hero" class="hero-gradient relative overflow-hidden min-h-screen flex items-center pt-20 md:pt-0">
+    <!-- Decorative circles -->
+    <div class="petal w-96 h-96 rounded-full bg-blush-400 top-[-8rem] right-[-6rem]"></div>
+    <div class="petal w-64 h-64 rounded-full bg-blush-300 bottom-[-4rem] left-[-4rem]"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-8 py-24 md:py-32">
+      <!-- Eyebrow -->
+      <div class="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-blush-200 rounded-full px-4 py-1.5 text-xs font-medium text-blush-600 mb-8 tracking-wide uppercase">
+        <i data-lucide="heart" class="w-3.5 h-3.5 fill-current"></i>
+        Corpus Linguistics · Systemic Functional Linguistics · PUP Manila
+      </div>
+
+      <!-- Title -->
+      <h1 class="font-serif text-4xl md:text-6xl font-bold text-plum leading-tight mb-6">
+        What Is Love?
+        <span class="block text-2xl md:text-3xl font-serif font-normal italic text-blush-500 mt-3 leading-snug">
+          A Diachronic Corpus-Based Analysis of Romantic Expression<br class="hidden md:block"> in Pop Song Lyrics Across Five Decades
+        </span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="text-base md:text-lg text-charcoal/70 font-sans mb-8 max-w-2xl leading-relaxed">
+        A Corpus Linguistics &amp; Systemic Functional Linguistics (SFL) Research Project examining how the language of love in popular music has transformed from the 1980s to the 2020s.
+      </p>
+
+      <!-- Authors -->
+      <div class="glass rounded-2xl px-6 py-5 mb-10 max-w-2xl">
+        <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold mb-2">Authors</p>
+        <p class="text-sm text-charcoal/80 leading-relaxed font-sans">
+          Apostol, M. A. · Darilay, H. · Diaz, S. J. P. · Dulce, K. L. M. · Gumayan, S. T. B. · Jarabe, J. S. · Lorilla, P. B. · Sanchez, K. A. A.
+        </p>
+        <p class="text-xs text-charcoal/50 mt-1">AB ELS 3-5 · Polytechnic University of the Philippines, Sta. Mesa, Manila</p>
+      </div>
+
+      <!-- CTA -->
+      <a href="#results" class="inline-flex items-center gap-3 bg-blush-500 hover:bg-blush-600 text-white font-semibold rounded-full px-8 py-4 text-sm shadow-lg shadow-blush-300/40 transition-all duration-200 hover:scale-105 hover:shadow-blush-400/40">
+        <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+        Explore Corpus Insights
+      </a>
+
+      <!-- Stat row -->
+      <div class="mt-14 grid grid-cols-3 gap-6 max-w-md">
+        <div class="text-center">
+          <p class="font-serif text-3xl font-bold text-blush-500">50K</p>
+          <p class="text-xs text-charcoal/55 mt-1">Word Corpus</p>
+        </div>
+        <div class="text-center border-x border-blush-200">
+          <p class="font-serif text-3xl font-bold text-blush-500">5</p>
+          <p class="text-xs text-charcoal/55 mt-1">Decades</p>
+        </div>
+        <div class="text-center">
+          <p class="font-serif text-3xl font-bold text-blush-500">150+</p>
+          <p class="text-xs text-charcoal/55 mt-1">Songs Analyzed</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== INTRO / BACKGROUND ========== -->
+  <section class="px-8 py-20 max-w-4xl mx-auto">
+    <div class="section-divider mb-16"></div>
+
+    <div class="flex items-center gap-3 mb-8">
+      <span class="bg-blush-50 p-2 rounded-xl"><i data-lucide="music" class="w-5 h-5 text-blush-500"></i></span>
+      <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">Background</p>
+    </div>
+
+    <h2 class="font-serif text-3xl md:text-4xl font-bold text-plum mb-6 leading-tight">
+      Love: The Dominant Theme<br class="hidden md:block"> of Popular Music
+    </h2>
+
+    <div class="prose prose-rose max-w-none text-charcoal/75 text-base leading-relaxed space-y-5 font-sans">
+      <p>
+        Music is a huge part of what influences us and our culture — it encodes and reproduces the ideologies of its time. Among all themes in mainstream popular songs, romantic love has remained the most dominant and persistent across decades. Empirical content analyses of chart-topping songs consistently confirm that love appears in the majority of lyrical content: Ruth (2019) found love in <strong class="text-blush-600">57%</strong> of German popular songs, and Christenson et al. (2019) reported that <strong class="text-blush-600">67.3%</strong> of US top-40 songs referenced relationships and love.
+      </p>
+      <p>
+        The expression of love in songs, however, is not static. Studies reveal a diachronic decline in romantic uses of the word "love," a rise in sexually explicit and lust-oriented themes, and a progressive change from idealized romance toward more complicated and darker emotional articulations (Smiler et al., 2017; Madanikia &amp; Bartholomew, 2014).
+      </p>
+      <p>
+        This study addresses that gap by combining corpus linguistics tools with Halliday's Systemic Functional Linguistics (SFL) to trace how the <em>lexicogrammar of love</em> in popular lyrics has changed from the 1980s through the 2020s.
+      </p>
+    </div>
+
+    <!-- Research Questions -->
+    <div class="mt-12 space-y-4">
+      <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold mb-5">Research Questions</p>
+      <div class="glass rounded-2xl p-5 hover-lift">
+        <div class="flex gap-4">
+          <span class="font-serif text-2xl font-bold text-blush-300">01</span>
+          <p class="text-sm text-charcoal/80 leading-relaxed pt-1">What are the most <strong>frequent lexical items</strong> associated with the expression of love in popular song lyrics across the five decades?</p>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-5 hover-lift">
+        <div class="flex gap-4">
+          <span class="font-serif text-2xl font-bold text-blush-300">02</span>
+          <p class="text-sm text-charcoal/80 leading-relaxed pt-1">What <strong>collocational and concordance patterns</strong> emerge from the selected lexical items across the designated decades?</p>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-5 hover-lift">
+        <div class="flex gap-4">
+          <span class="font-serif text-2xl font-bold text-blush-300">03</span>
+          <p class="text-sm text-charcoal/80 leading-relaxed pt-1">How do the changing stylistic choices reflect or challenge broader <strong>sociocultural ideologies</strong> surrounding modern romance, individual autonomy, and emotional vulnerability?</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== THEORETICAL FRAMEWORK ========== -->
+  <section id="framework" class="bg-linen py-20 px-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="section-divider mb-16"></div>
+
+      <div class="flex items-center gap-3 mb-8">
+        <span class="bg-blush-50 p-2 rounded-xl"><i data-lucide="layers" class="w-5 h-5 text-blush-500"></i></span>
+        <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">Theoretical Framework</p>
+      </div>
+
+      <h2 class="font-serif text-3xl md:text-4xl font-bold text-plum mb-4 leading-tight">
+        Halliday's Systemic Functional<br class="hidden md:block"> Linguistics (SFL)
+      </h2>
+      <p class="text-charcoal/65 text-sm max-w-2xl mb-12 leading-relaxed">
+        SFL posits that language is organized around three simultaneous metafunctions. In this study, each metafunction maps directly to how corpus data is interpreted — frequency reveals ideational content, collocation exposes interpersonal positioning, and concordance structures show textual organization.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Ideational -->
+        <div class="glass rounded-3xl p-7 hover-lift">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blush-100 to-blush-200 flex items-center justify-center mb-5">
+            <i data-lucide="brain" class="w-6 h-6 text-blush-500"></i>
+          </div>
+          <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold mb-1">Ideational Metafunction</p>
+          <h3 class="font-serif text-xl font-bold text-plum mb-3">Field</h3>
+          <p class="text-sm text-charcoal/70 leading-relaxed mb-4">Represents experience through transitivity — processes, participants, and circumstances.</p>
+          <div class="bg-blush-50 rounded-xl p-3 text-xs text-blush-600 font-medium italic">
+            "What love <em>is</em>" — decoded through frequency lists.
+          </div>
+        </div>
+
+        <!-- Interpersonal -->
+        <div class="glass rounded-3xl p-7 hover-lift">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blush-100 to-blush-200 flex items-center justify-center mb-5">
+            <i data-lucide="heart-handshake" class="w-6 h-6 text-blush-500"></i>
+          </div>
+          <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold mb-1">Interpersonal Metafunction</p>
+          <h3 class="font-serif text-xl font-bold text-plum mb-3">Tenor</h3>
+          <p class="text-sm text-charcoal/70 leading-relaxed mb-4">Enacts social relationships through mood and modality between participants.</p>
+          <div class="bg-blush-50 rounded-xl p-3 text-xs text-blush-600 font-medium italic">
+            "How love is <em>enacted</em>" — decoded through collocation patterns.
+          </div>
+        </div>
+
+        <!-- Textual -->
+        <div class="glass rounded-3xl p-7 hover-lift">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blush-100 to-blush-200 flex items-center justify-center mb-5">
+            <i data-lucide="type" class="w-6 h-6 text-blush-500"></i>
+          </div>
+          <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold mb-1">Textual Metafunction</p>
+          <h3 class="font-serif text-xl font-bold text-plum mb-3">Mode</h3>
+          <p class="text-sm text-charcoal/70 leading-relaxed mb-4">Organizes information through theme–rheme structures and information flow.</p>
+          <div class="bg-blush-50 rounded-xl p-3 text-xs text-blush-600 font-medium italic">
+            "How love is <em>presented</em>" — decoded through KWIC concordance.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== METHODOLOGY ========== -->
+  <section id="methodology" class="px-8 py-20 max-w-4xl mx-auto">
+    <div class="section-divider mb-16"></div>
+
+    <div class="flex items-center gap-3 mb-8">
+      <span class="bg-blush-50 p-2 rounded-xl"><i data-lucide="settings-2" class="w-5 h-5 text-blush-500"></i></span>
+      <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">Methodology</p>
+    </div>
+
+    <h2 class="font-serif text-3xl md:text-4xl font-bold text-plum mb-4 leading-tight">
+      Building the Corpus
+    </h2>
+    <p class="text-charcoal/65 text-sm max-w-2xl mb-12 leading-relaxed">
+      A comparable, diachronic corpus totaling approximately 50,000 words, purposefully sampled from pop love songs across five temporal milestones and processed through AntConc for rigorous linguistic analysis.
+    </p>
+
+    <!-- Corpus Overview Grid -->
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      <div class="glass rounded-2xl p-6 hover-lift">
+        <div class="flex items-center gap-3 mb-3">
+          <i data-lucide="music-2" class="w-5 h-5 text-blush-400"></i>
+          <span class="font-semibold text-plum text-sm">Corpus Composition</span>
+        </div>
+        <ul class="text-sm text-charcoal/70 space-y-2">
+          <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>~10,000 words per sub-corpus</li>
+          <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>30–40 songs per decade</li>
+          <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>Pop genre only for register consistency</li>
+          <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>Romantic, lustful, and longing themes</li>
+        </ul>
+      </div>
+      <div class="glass rounded-2xl p-6 hover-lift">
+        <div class="flex items-center gap-3 mb-3">
+          <i data-lucide="database" class="w-5 h-5 text-blush-400"></i>
+          <span class="font-semibold text-plum text-sm">Data Sources &amp; Tools</span>
+        </div>
+        <ul class="text-sm text-charcoal/70 space-y-2">
+          <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>Genius &amp; AZLyrics (verified repositories)</li>
+          <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>AntConc for frequency, collocation &amp; KWIC</li>
+          <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>UTF-8 plain text (.txt) files</li>
+          <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>Log-likelihood statistics for collocation strength</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Pipeline Steps -->
+    <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold mb-6">Analysis Pipeline</p>
+    <div class="space-y-5">
+      <!-- Step 1 -->
+      <div class="step-card glass rounded-2xl p-6 pl-8 hover-lift">
+        <div class="flex items-start gap-5">
+          <div class="shrink-0 w-10 h-10 rounded-full bg-blush-100 flex items-center justify-center">
+            <i data-lucide="filter" class="w-4 h-4 text-blush-500"></i>
+          </div>
+          <div>
+            <p class="text-xs text-blush-400 font-semibold uppercase tracking-widest mb-1">Stage 1 — Sampling &amp; Collection</p>
+            <p class="font-semibold text-plum mb-2">Corpus Construction</p>
+            <p class="text-sm text-charcoal/70 leading-relaxed">Five equal sub-corpora (1980s–2020s) of ~10,000 words each (30–40 pop love songs per decade) were assembled from Genius and AZLyrics, covering only pop songs with romantic, lustful, or longing themes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-card glass rounded-2xl p-6 pl-8 hover-lift">
+        <div class="flex items-start gap-5">
+          <div class="shrink-0 w-10 h-10 rounded-full bg-blush-100 flex items-center justify-center">
+            <i data-lucide="scissors" class="w-4 h-4 text-blush-500"></i>
+          </div>
+          <div>
+            <p class="text-xs text-blush-400 font-semibold uppercase tracking-widest mb-1">Stage 2 — Cleaning &amp; Normalization</p>
+            <p class="font-semibold text-plum mb-2">Text Preprocessing</p>
+            <p class="text-sm text-charcoal/70 leading-relaxed">Systematic removal of structural tags (<span class="font-mono text-blush-500 text-xs">[Chorus]</span>, <span class="font-mono text-blush-500 text-xs">[Verse 1]</span>, <span class="font-mono text-blush-500 text-xs">[Bridge]</span>), artist names, and credits. Repetitive ad-libs, non-lexical vocables (<em>"oh," "yeah," "la-la-la"</em>), and all punctuation were stripped out to prevent skewed frequency distributions.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-card glass rounded-2xl p-6 pl-8 hover-lift">
+        <div class="flex items-start gap-5">
+          <div class="shrink-0 w-10 h-10 rounded-full bg-blush-100 flex items-center justify-center">
+            <i data-lucide="bar-chart-horizontal" class="w-4 h-4 text-blush-500"></i>
+          </div>
+          <div>
+            <p class="text-xs text-blush-400 font-semibold uppercase tracking-widest mb-1">Stage 3 — Processing &amp; Analysis</p>
+            <p class="font-semibold text-plum mb-2">AntConc Analysis</p>
+            <p class="text-sm text-charcoal/70 leading-relaxed">Analysis using AntConc proceeded in three stages: (1) frequency lists per sub-corpus to identify prominent love-related lexical items per decade; (2) collocation analysis for top node words; and (3) qualitative KWIC concordance examination through an SFL lens to interpret ideational, interpersonal, and textual meanings.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESULTS: INTERACTIVE DECADES ========== -->
+  <section id="results" class="bg-linen py-20 px-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="section-divider mb-16"></div>
+
+      <div class="flex items-center gap-3 mb-8">
+        <span class="bg-blush-50 p-2 rounded-xl"><i data-lucide="bar-chart-2" class="w-5 h-5 text-blush-500"></i></span>
+        <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">Results &amp; Discussion</p>
+      </div>
+
+      <h2 class="font-serif text-3xl md:text-4xl font-bold text-plum mb-4 leading-tight">
+        Five Decades of Love
+      </h2>
+      <p class="text-charcoal/65 text-sm max-w-2xl mb-10 leading-relaxed">
+        Select a decade below to explore its lexical frequency profile, SFL interpretation, collocational evidence, and representative concordance lines from the corpus.
+      </p>
+
+      <!-- "love" frequency trend banner -->
+      <div class="glass rounded-2xl p-6 mb-10">
+        <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold mb-4">Frequency of "love" across decades</p>
+        <div class="space-y-3">
+          <div class="flex items-center gap-4 text-xs">
+            <span class="w-10 text-right font-medium text-charcoal/60">1980s</span>
+            <div class="flex-1 bg-blush-50 rounded-full h-3 overflow-hidden">
+              <div class="freq-bar h-3" style="width:69%"></div>
+            </div>
+            <span class="w-8 font-bold text-blush-600">212</span>
+          </div>
+          <div class="flex items-center gap-4 text-xs">
+            <span class="w-10 text-right font-medium text-charcoal/60">1990s</span>
+            <div class="flex-1 bg-blush-50 rounded-full h-3 overflow-hidden">
+              <div class="freq-bar h-3" style="width:100%"></div>
+            </div>
+            <span class="w-8 font-bold text-blush-600">305</span>
+          </div>
+          <div class="flex items-center gap-4 text-xs">
+            <span class="w-10 text-right font-medium text-charcoal/60">2000s</span>
+            <div class="flex-1 bg-blush-50 rounded-full h-3 overflow-hidden">
+              <div class="freq-bar h-3" style="width:44%"></div>
+            </div>
+            <span class="w-8 font-bold text-blush-600">134</span>
+          </div>
+          <div class="flex items-center gap-4 text-xs">
+            <span class="w-10 text-right font-medium text-charcoal/60">2010s</span>
+            <div class="flex-1 bg-blush-50 rounded-full h-3 overflow-hidden">
+              <div class="freq-bar h-3" style="width:17%"></div>
+            </div>
+            <span class="w-8 font-bold text-blush-600">51</span>
+          </div>
+          <div class="flex items-center gap-4 text-xs">
+            <span class="w-10 text-right font-medium text-charcoal/60">2020s</span>
+            <div class="flex-1 bg-blush-50 rounded-full h-3 overflow-hidden">
+              <div class="freq-bar h-3" style="width:29%"></div>
+            </div>
+            <span class="w-8 font-bold text-blush-600">89</span>
+          </div>
+        </div>
+        <p class="text-xs text-charcoal/45 mt-4 italic">Corroborates Smiler et al. (2017): a linear decline in romantic uses of the word "love" across five decades.</p>
+      </div>
+
+      <!-- Decade Tabs -->
+      <div class="flex overflow-x-auto pb-1 border-b border-blush-200 mb-8 gap-1 -mx-2 px-2">
+        <button class="decade-btn active shrink-0 px-4 py-3 text-sm font-medium text-charcoal/70" onclick="showDecade('1980s', this)">1980s</button>
+        <button class="decade-btn shrink-0 px-4 py-3 text-sm font-medium text-charcoal/70" onclick="showDecade('1990s', this)">1990s</button>
+        <button class="decade-btn shrink-0 px-4 py-3 text-sm font-medium text-charcoal/70" onclick="showDecade('2000s', this)">2000s</button>
+        <button class="decade-btn shrink-0 px-4 py-3 text-sm font-medium text-charcoal/70" onclick="showDecade('2010s', this)">2010s</button>
+        <button class="decade-btn shrink-0 px-4 py-3 text-sm font-medium text-charcoal/70" onclick="showDecade('2020s', this)">2020s</button>
+      </div>
+
+      <!-- ---- 1980s Panel ---- -->
+      <div id="panel-1980s" class="decade-panel active">
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Left -->
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">1980s</p>
+                  <h3 class="font-serif text-2xl font-bold text-plum mt-0.5">Idealized Romance</h3>
+                </div>
+                <span class="text-4xl">💌</span>
+              </div>
+              <p class="text-xs text-charcoal/60 leading-relaxed mb-4">Love is construed as a <strong>stable, eternal, internal state</strong> — a shared cultural script of permanence and mutual commitment consistent with Wilkinson's (1976) observation that mid-century songs allowed emotional expression within a framework of lasting devotion.</p>
+
+              <!-- Top Words -->
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Top Love-Related Lexical Items</p>
+              <div class="space-y-2.5">
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">love</span><span class="text-blush-500 font-bold">212</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:100%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">feel</span><span class="text-blush-500 font-bold">46</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:21%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">heart</span><span class="text-blush-500 font-bold">42</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:19%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">eyes</span><span class="text-blush-500 font-bold">36</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:17%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">forever</span><span class="text-blush-500 font-bold">34</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:16%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">hold</span><span class="text-blush-500 font-bold">29</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:13%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">true</span><span class="text-blush-500 font-bold">28</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:13%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right -->
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">SFL Interpretation</p>
+              <p class="text-sm text-charcoal/75 leading-relaxed mb-4">Dominated by <strong>mental processes of affection and perception</strong> (ideational metafunction). The prevalence of <em>forever</em> and <em>true</em> shows an ideology of romantic permanence. Collocates of the pronoun <em>I</em> include <em>nothing</em> (likelihood = 156.95) and <em>my</em> (likelihood = 43.00), constructing a knowing, feeling subject who narrates love through <strong>high declarative certainty</strong> and low modality.</p>
+              <div class="bg-blush-50 rounded-xl p-3 text-xs text-charcoal/60 italic">
+                <p class="font-semibold text-blush-500 not-italic mb-1">Collocational Note</p>
+                Collocates of <em>know</em> include <em>at</em> (likelihood = 89.95), producing concordance patterns of declarative epistemic certainty about emotional states.
+              </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Sample Concordance Lines</p>
+              <div class="space-y-3">
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"I'll love you more than I can say."</p>
+                </div>
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"I wanna know what love is."</p>
+                </div>
+              </div>
+              <div class="mt-4 bg-blush-500/8 rounded-xl p-3">
+                <p class="text-xs text-charcoal/60 leading-relaxed"><strong class="text-blush-600">Dominant metaphor:</strong> LOVE IS AN ENDURING STATE — a stable emotional reality the speaker narrates, not an event they undergo.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- 1990s Panel ---- -->
+      <div id="panel-1990s" class="decade-panel">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">1990s</p>
+                  <h3 class="font-serif text-2xl font-bold text-plum mt-0.5">Relational &amp; Dynamic</h3>
+                </div>
+                <span class="text-4xl">🌹</span>
+              </div>
+              <p class="text-xs text-charcoal/60 leading-relaxed mb-4">The 1990s sees a <strong>peak</strong> in the raw frequency of "love" (305) alongside the emergence of relational and dynamic vocabulary. Love shifts from something the singer possesses to <strong>something that happens to the singer</strong>.</p>
+
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Top Love-Related Lexical Items</p>
+              <div class="space-y-2.5">
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">love</span><span class="text-blush-500 font-bold">305</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:100%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">baby</span><span class="text-blush-500 font-bold">108</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:35%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">fall</span><span class="text-blush-500 font-bold">40</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:13%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">hold</span><span class="text-blush-500 font-bold">40</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:13%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">need</span><span class="text-blush-500 font-bold">31</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:10%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">tell</span><span class="text-blush-500 font-bold">28</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:9%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">SFL Interpretation</p>
+              <p class="text-sm text-charcoal/75 leading-relaxed mb-4">A shift from <strong>mental to material/relational processes</strong> — love as something that happens to the singer. The rise of <em>baby</em> as the second most frequent item aligns with Climent &amp; Coll-Florit's (2020) finding that "baby" is the most recurrent metaphorical expression for the love object. The strongest collocate of <em>want</em> is <em>baby</em> (likelihood = 234.38), alongside <em>matters</em> (likelihood = 125.89) and <em>mean</em> (likelihood = 54.40).</p>
+              <div class="bg-blush-50 rounded-xl p-3 text-xs text-charcoal/60 italic">
+                <p class="font-semibold text-blush-500 not-italic mb-1">Key SFL Shift</p>
+                Temporal and contingent framing introduces <strong>modality and comparison</strong> as interpersonal resources — "love takes time," "love is like losing."
+              </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Sample Concordance Lines</p>
+              <div class="space-y-3">
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"Love takes time to heal."</p>
+                </div>
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"I'm gonna love you like I'm gonna lose you."</p>
+                </div>
+              </div>
+              <div class="mt-4 bg-blush-500/8 rounded-xl p-3">
+                <p class="text-xs text-charcoal/60 leading-relaxed"><strong class="text-blush-600">Dominant shift:</strong> LOVE IS A PROCESS — love now occurs over time and involves contingency, making the speaker a participant in an event rather than the holder of a state.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- 2000s Panel ---- -->
+      <div id="panel-2000s" class="decade-panel">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">2000s</p>
+                  <h3 class="font-serif text-2xl font-bold text-plum mt-0.5">Fragmentation &amp; Compulsion</h3>
+                </div>
+                <span class="text-4xl">💊</span>
+              </div>
+              <p class="text-xs text-charcoal/60 leading-relaxed mb-4">The romantic lexicon <strong>fragments</strong>: "love" drops sharply while novel items (<em>halo</em>, <em>bleeding</em>) reflect increasing negativity, personalization, and spatial metaphor. The "addiction" frame emerges — love as involuntary dependency.</p>
+
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Top Love-Related Lexical Items</p>
+              <div class="space-y-2.5">
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">love</span><span class="text-blush-500 font-bold">134</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:100%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">baby</span><span class="text-blush-500 font-bold">100</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:74%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">halo</span><span class="text-blush-500 font-bold">67</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:50%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">belong</span><span class="text-blush-500 font-bold">34</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:25%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">girl</span><span class="text-blush-500 font-bold">33</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:24%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">waiting</span><span class="text-blush-500 font-bold">29</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:21%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">bleeding</span><span class="text-blush-500 font-bold">27</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:20%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">SFL Interpretation</p>
+              <p class="text-sm text-charcoal/75 leading-relaxed mb-4">Expansion into <strong>visual/spatial metaphors</strong> (<em>halo</em>, <em>belong</em>) and <strong>affective extremity</strong> (<em>bleeding</em>). The collocational profile of <em>I</em> is dominated by <em>wanna</em> (likelihood = 109.09), <em>halo</em> (likelihood = 53.49), <em>fallin'</em> (likelihood = 42.70), and <em>bleeding</em> (likelihood = 27.55). Two critical SFL observations emerge: (1) <em>fallin'</em> shows a processual construal — love is an event rather than a state; (2) the <strong>addiction metaphor</strong> reframes love as involuntary physiological dependency (Kövecses, 2014).</p>
+              <div class="bg-blush-50 rounded-xl p-3 text-xs text-charcoal/60 italic">
+                <p class="font-semibold text-blush-500 not-italic mb-1">Temporal Stasis</p>
+                The item <em>waiting</em> introduces temporal stasis absent from earlier decades — a change toward lyrical themes of longing and deferred gratification (Fell et al., 2019).
+              </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Sample Concordance Lines</p>
+              <div class="space-y-3">
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"I think I'm fallin' for you."</p>
+                </div>
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"I'm addicted to your love, baby."</p>
+                </div>
+              </div>
+              <div class="mt-4 bg-blush-500/8 rounded-xl p-3">
+                <p class="text-xs text-charcoal/60 leading-relaxed"><strong class="text-blush-600">Dominant metaphor:</strong> LOVE IS AN ADDICTION — love is construed as a compulsion, removing agency from the romantic subject entirely.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- 2010s Panel ---- -->
+      <div id="panel-2010s" class="decade-panel">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">2010s</p>
+                  <h3 class="font-serif text-2xl font-bold text-plum mt-0.5">Immediacy &amp; Possession</h3>
+                </div>
+                <span class="text-4xl">🔥</span>
+              </div>
+              <p class="text-xs text-charcoal/60 leading-relaxed mb-4"><strong>Dramatic compression</strong> of the love lexicon: "love" falls to just 51 occurrences. The most distinctive items construe love through <strong>immediacy, physicality, and possession</strong> rather than through enduring emotion. Abstract words like <em>forever</em> and <em>true</em> begin their exit.</p>
+
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Top Love-Related Lexical Items</p>
+              <div class="space-y-2.5">
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">love</span><span class="text-blush-500 font-bold">51</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:100%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">edge</span><span class="text-blush-500 font-bold">39</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:76%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">kiss</span><span class="text-blush-500 font-bold">17</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:33%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">tonight</span><span class="text-blush-500 font-bold">17</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:33%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">mine</span><span class="text-blush-500 font-bold">16</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:31%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">mind</span><span class="text-blush-500 font-bold">14</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:27%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">SFL Interpretation</p>
+              <p class="text-sm text-charcoal/75 leading-relaxed mb-4">The ideational content shifts from <strong>mental processes</strong> (feeling, knowing) toward <strong>material processes</strong> (kissing, possessing) and from circumstantial elements of duration (<em>forever</em>, <em>always</em>) toward temporal immediacy (<em>tonight</em>). Prominent collocates include <em>until</em> (likelihood = 38.94), <em>mine</em> (likelihood = 29.56), and <em>move</em> (likelihood = 26.42). The high frequency of <em>mine</em> signals <strong>LOVE IS POSSESSION</strong> as a dominant cultural metaphor (Climent &amp; Coll-Florit, 2020).</p>
+              <div class="bg-blush-50 rounded-xl p-3 text-xs text-charcoal/60 italic">
+                <p class="font-semibold text-blush-500 not-italic mb-1">Lust Themes Rising</p>
+                Consistent with Madanikia &amp; Bartholomew (2014): significant increase in lust themes accompanying the sharp decline of the word "love."
+              </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Sample Concordance Lines</p>
+              <div class="space-y-3">
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"You know that I want to be with you all the time / Until I make you mine."</p>
+                </div>
+              </div>
+              <div class="mt-4 bg-blush-500/8 rounded-xl p-3">
+                <p class="text-xs text-charcoal/60 leading-relaxed"><strong class="text-blush-600">Dominant metaphor:</strong> LOVE IS POSSESSION — the beloved is reconstituted as an object to be obtained. The possessive pronoun <em>mine</em> encodes an interpersonal dynamic of ownership.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- 2020s Panel ---- -->
+      <div id="panel-2020s" class="decade-panel">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">2020s</p>
+                  <h3 class="font-serif text-2xl font-bold text-plum mt-0.5">Concreteness &amp; Disruption</h3>
+                </div>
+                <span class="text-4xl">🌙</span>
+              </div>
+              <p class="text-xs text-charcoal/60 leading-relaxed mb-4">Partial recovery of "love" (89), but a <strong>spare emotional lexicon</strong>. Abstract words like <em>forever</em> and <em>true</em> have <strong>vanished entirely</strong>. Love is either an effect that can be <em>produced</em> or naturalized via cosmic metaphor. A double movement of <strong>commodification and cosmic nostalgia</strong>.</p>
+
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Top Love-Related Lexical Items</p>
+              <div class="space-y-2.5">
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">love</span><span class="text-blush-500 font-bold">89</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:100%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">like</span><span class="text-blush-500 font-bold">83</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:93%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">baby</span><span class="text-blush-500 font-bold">50</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:56%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">want</span><span class="text-blush-500 font-bold">44</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:49%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">need</span><span class="text-blush-500 font-bold">36</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:40%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">fall</span><span class="text-blush-500 font-bold">29</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:32%"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1"><span class="font-medium text-charcoal/80">mind</span><span class="text-blush-500 font-bold">26</span></div>
+                  <div class="bg-blush-50 rounded-full h-2"><div class="freq-bar h-2" style="width:29%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-5">
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">SFL Interpretation</p>
+              <p class="text-sm text-charcoal/75 leading-relaxed mb-4">Collocations marked by <strong>novelty and disruption</strong>: <em>supernatural</em> (likelihood = 40.58), <em>doesn't</em> (likelihood = 39.25), <em>butter</em> (likelihood = 26.43), and <em>dynamite</em> (likelihood = 19.18). A double movement emerges: love as a <strong>produced effect</strong> ("make you fall in love" — material process with explicit Agent and Goal) and love <strong>naturalized via cosmic metaphor</strong> ("moon needs the stars"), reclaiming experiential proximity identified by Climent &amp; Coll-Florit (2020) as the most enduring love metaphor across seven decades.</p>
+              <div class="bg-blush-50 rounded-xl p-3 text-xs text-charcoal/60 italic">
+                <p class="font-semibold text-blush-500 not-italic mb-1">Lexical Attrition</p>
+                <em>Feel</em> and <em>heart</em> — top emotional items in the 1980s and 1990s — no longer appear prominently. <em>Forever</em> and <em>true</em> have vanished entirely, consistent with Wang et al. (2025).
+              </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6">
+              <p class="text-xs font-semibold text-blush-500 uppercase tracking-widest mb-3">Sample Concordance Lines</p>
+              <div class="space-y-3">
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"You make me wanna make you fall in love."</p>
+                </div>
+                <div class="concordance rounded-r-xl px-4 py-3">
+                  <p class="text-sm font-serif italic text-plum">"Like the moon needs the stars."</p>
+                </div>
+              </div>
+              <div class="mt-4 bg-blush-500/8 rounded-xl p-3">
+                <p class="text-xs text-charcoal/60 leading-relaxed"><strong class="text-blush-600">Dominant shift:</strong> LOVE IS TRANSACTIONAL — construed as an outcome to be engineered. Love is also LOVE IS COSMIC NATURE — a simultaneous nostalgic reach for permanence.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== RQ3: SOCIOCULTURAL DISCUSSION ========== -->
+  <section class="px-8 py-20 max-w-4xl mx-auto">
+    <div class="section-divider mb-16"></div>
+
+    <div class="flex items-center gap-3 mb-8">
+      <span class="bg-blush-50 p-2 rounded-xl"><i data-lucide="globe-2" class="w-5 h-5 text-blush-500"></i></span>
+      <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">Sociocultural Analysis</p>
+    </div>
+
+    <h2 class="font-serif text-3xl md:text-4xl font-bold text-plum mb-4 leading-tight">
+      From Communal Script to<br class="hidden md:block"> Individualized Affect
+    </h2>
+    <p class="text-charcoal/65 text-sm max-w-2xl mb-10 leading-relaxed">
+      The diachronic trajectory of the love lexicon — from <em>forever, true, heart</em> in the 1980s to <em>mine, tonight, edge</em> in the 2010s to <em>supernatural, butter, dynamite</em> in the 2020s — shows a decisive shift in the field of discourse.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-4 mb-12">
+      <div class="glass rounded-2xl p-6 hover-lift text-center">
+        <p class="font-serif text-lg font-bold text-plum mb-2">Permanence &amp; Mutuality</p>
+        <p class="text-xs text-charcoal/60 mb-3">1980s shared cultural script</p>
+        <div class="flex flex-wrap gap-2 justify-center">
+          <span class="bg-blush-100 text-blush-600 rounded-full px-3 py-1 text-xs font-medium">forever</span>
+          <span class="bg-blush-100 text-blush-600 rounded-full px-3 py-1 text-xs font-medium">true</span>
+          <span class="bg-blush-100 text-blush-600 rounded-full px-3 py-1 text-xs font-medium">heart</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-center">
+        <div class="text-center">
+          <div class="evo-arrow">→</div>
+          <p class="text-xs text-charcoal/45 mt-1">Diachronic shift</p>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-6 hover-lift text-center">
+        <p class="font-serif text-lg font-bold text-plum mb-2">Private &amp; Contingent</p>
+        <p class="text-xs text-charcoal/60 mb-3">2020s transactional experience</p>
+        <div class="flex flex-wrap gap-2 justify-center">
+          <span class="bg-blush-100 text-blush-600 rounded-full px-3 py-1 text-xs font-medium">mine</span>
+          <span class="bg-blush-100 text-blush-600 rounded-full px-3 py-1 text-xs font-medium">tonight</span>
+          <span class="bg-blush-100 text-blush-600 rounded-full px-3 py-1 text-xs font-medium">dynamite</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-7">
+      <p class="text-sm text-charcoal/75 leading-relaxed">
+        In SFL terms, this is a shift in the <strong class="text-plum">field of discourse</strong>: the dominant ideational representation of love has moved from a shared cultural script of permanence and mutuality to a private and contingent transactional experience. This finding resonates with Illouz's sociological argument that modern romance has been restructured by the logic of consumption and choice — where love is <em>evaluated</em> rather than simply experienced — a logic that the 2020s concordance of "make you fall in love" makes linguistically explicit (Fuentes &amp; Peregrín, 2021).
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== CONCLUSION ========== -->
+  <section id="conclusion" class="bg-linen py-20 px-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="section-divider mb-16"></div>
+
+      <div class="flex items-center gap-3 mb-8">
+        <span class="bg-blush-50 p-2 rounded-xl"><i data-lucide="book-open" class="w-5 h-5 text-blush-500"></i></span>
+        <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">Conclusion</p>
+      </div>
+
+      <h2 class="font-serif text-3xl md:text-4xl font-bold text-plum mb-4 leading-tight">
+        The Evolution of Love's Language
+      </h2>
+      <p class="text-charcoal/65 text-sm max-w-2xl mb-12 leading-relaxed">
+        A systematic diachronic transformation across five decades, traced through corpus frequency, collocational statistics, and KWIC concordance lines interpreted through an SFL lens.
+      </p>
+
+      <!-- Three axes of change -->
+      <div class="space-y-5 mb-12">
+        <div class="glass rounded-2xl p-6 hover-lift">
+          <div class="flex items-start gap-5">
+            <span class="bg-blush-100 p-2.5 rounded-xl shrink-0"><i data-lucide="brain" class="w-5 h-5 text-blush-500"></i></span>
+            <div>
+              <p class="font-semibold text-plum mb-1">Ideational Representation</p>
+              <p class="text-sm text-charcoal/70 leading-relaxed">From <strong>stable mental states</strong> (<em>forever, true, heart</em>) to <strong>material processes and possessive relations</strong> (<em>mine, tonight, kiss</em>). What love <em>is</em> has changed fundamentally.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 hover-lift">
+          <div class="flex items-start gap-5">
+            <span class="bg-blush-100 p-2.5 rounded-xl shrink-0"><i data-lucide="heart-handshake" class="w-5 h-5 text-blush-500"></i></span>
+            <div>
+              <p class="font-semibold text-plum mb-1">Interpersonal Tenor</p>
+              <p class="text-sm text-charcoal/70 leading-relaxed">From <strong>declarative devotion</strong> (<em>"more than I can say"</em>) to <strong>negotiated demand</strong> (<em>"make you mine," "doesn't"</em>). How love is <em>enacted</em> has shifted from certainty to contingency.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 hover-lift">
+          <div class="flex items-start gap-5">
+            <span class="bg-blush-100 p-2.5 rounded-xl shrink-0"><i data-lucide="type" class="w-5 h-5 text-blush-500"></i></span>
+            <div>
+              <p class="font-semibold text-plum mb-1">Textual Organization</p>
+              <p class="text-sm text-charcoal/70 leading-relaxed">Now privileges <strong>immediacy and novelty</strong> over duration and convention — reproducing broader sociocultural ideologies of <strong>individualization and emotional commodification</strong> of romantic idealism.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core finding -->
+      <div class="relative rounded-3xl overflow-hidden">
+        <div class="hero-gradient p-8 md:p-10">
+          <p class="text-xs uppercase tracking-widest text-blush-500 font-semibold mb-3">Core Finding</p>
+          <p class="font-serif text-xl md:text-2xl font-bold text-plum leading-snug mb-4">
+            A systematic transformation from <em>stable mental states</em> (1980s) to <em>contingent, transactional, and commodified experiences</em> (2020s).
+          </p>
+          <p class="text-sm text-charcoal/65 max-w-xl leading-relaxed">The lexicogrammar of popular love songs has faithfully encoded — and reproduced — the broader sociological restructuring of intimacy by the logic of consumption and individual choice.</p>
+        </div>
+      </div>
+
+      <!-- Future Directions -->
+      <div class="mt-10 glass rounded-2xl p-7">
+        <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold mb-4">Recommendations for Future Research</p>
+        <ul class="space-y-3 text-sm text-charcoal/70">
+          <li class="flex items-start gap-3">
+            <i data-lucide="arrow-right" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>
+            Expand the corpus to include <strong>non-English and non-Western</strong> song traditions for cross-cultural comparison.
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="arrow-right" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>
+            Incorporate <strong>multimodal analysis of music videos</strong> to examine how visual semiotics interact with lyrical construals of love.
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="arrow-right" class="w-4 h-4 text-blush-400 mt-0.5 shrink-0"></i>
+            Apply <strong>longitudinal SFL clause-level transitivity analysis</strong> to full texts rather than keyword samples, deepening granularity of ideological tracing.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DATASET ACCESS ========== -->
+  <section id="dataset" class="px-8 py-20 max-w-4xl mx-auto">
+    <div class="section-divider mb-16"></div>
+
+    <div class="flex items-center gap-3 mb-8">
+      <span class="bg-blush-50 p-2 rounded-xl"><i data-lucide="database" class="w-5 h-5 text-blush-500"></i></span>
+      <p class="text-xs uppercase tracking-widest text-blush-400 font-semibold">Open Data</p>
+    </div>
+
+    <h2 class="font-serif text-3xl md:text-4xl font-bold text-plum mb-4 leading-tight">
+      Access the Full Corpus Data
+    </h2>
+    <p class="text-charcoal/65 text-sm max-w-xl mb-10 leading-relaxed">
+      For data transparency, the complete tracking matrices — including comprehensive multi-decade lexical frequency breakdowns, full statistical log-likelihood collocate tables, and raw KWIC concordance outputs — are organized and hosted dynamically.
+    </p>
+
+    <div class="glass rounded-3xl p-8 hover-lift">
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blush-100 to-blush-200 flex items-center justify-center shrink-0">
+          <i data-lucide="table-2" class="w-8 h-8 text-blush-500"></i>
+        </div>
+        <div class="flex-1">
+          <p class="font-semibold text-plum text-lg mb-1">Corpus Database — Google Sheets</p>
+          <p class="text-sm text-charcoal/60 mb-2 leading-relaxed">Multi-decade lexical frequency breakdowns · Log-likelihood collocate tables · Raw KWIC concordance outputs</p>
+          <p class="text-xs font-mono text-blush-400 break-all">docs.google.com/spreadsheets/d/1Yg_BmGPGKGN2A93KsgU83sGWlLNSOb66B3_1g5to084</p>
+        </div>
+        <a href="https://docs.google.com/spreadsheets/d/1Yg_BmGPGKGN2A93KsgU83sGWlLNSOb66B3_1g5to084/edit?usp=sharing"
+           target="_blank" rel="noopener noreferrer"
+           class="shrink-0 inline-flex items-center gap-2 bg-blush-500 hover:bg-blush-600 text-white font-semibold rounded-full px-6 py-3 text-sm shadow-md shadow-blush-300/40 transition-all duration-200 hover:scale-105">
+          <i data-lucide="external-link" class="w-4 h-4"></i>
+          Open Dataset
+        </a>
+      </div>
+    </div>
+
+    <!-- Appendix note -->
+    <div class="mt-6 bg-blush-50 rounded-2xl p-5 flex items-start gap-4">
+      <i data-lucide="info" class="w-5 h-5 text-blush-400 shrink-0 mt-0.5"></i>
+      <p class="text-sm text-charcoal/65 leading-relaxed">The corpus data structures are organized into structured sheets for each decade. Researchers are encouraged to access and verify all frequency, collocation, and concordance data directly from the primary dataset for replication and extension of this study.</p>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-plum text-white px-8 py-14">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-10">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="heart" class="w-5 h-5 text-blush-300 fill-current"></i>
+            <span class="font-serif text-xl font-bold text-white">What Is Love?</span>
+          </div>
+          <p class="text-sm text-white/60 leading-relaxed max-w-md">A Diachronic Corpus-Based Analysis of Romantic Expression in Pop Song Lyrics Across Five Decades.</p>
+        </div>
+        <div class="text-right">
+          <p class="text-xs text-white/40 uppercase tracking-widest mb-2">Institution</p>
+          <p class="text-sm text-white/70">Polytechnic University of the Philippines</p>
+          <p class="text-sm text-white/70">College of Arts and Letters</p>
+          <p class="text-sm text-blush-300 font-medium">AB English Language Studies · 3-5</p>
+        </div>
+      </div>
+
+      <div class="border-t border-white/10 pt-8">
+        <p class="text-xs text-white/40 mb-4 uppercase tracking-widest">Authors</p>
+        <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/65 mb-8">
+          <span>Apostol, M. A.</span>
+          <span>Darilay, H.</span>
+          <span>Diaz, S. J. P.</span>
+          <span>Dulce, K. L. M.</span>
+          <span>Gumayan, S. T. B.</span>
+          <span>Jarabe, J. S.</span>
+          <span>Lorilla, P. B.</span>
+          <span>Sanchez, K. A. A.</span>
+        </div>
+        <p class="text-xs text-white/30 leading-relaxed">
+          Theoretical framework: Halliday's Systemic Functional Linguistics (SFL). Corpus tool: AntConc (Anthony, 2004). Data sources: Genius &amp; AZLyrics. Key references: Smiler et al. (2017), Madanikia &amp; Bartholomew (2014), Climent &amp; Coll-Florit (2020), Parada-Cabaleiro et al. (2024), Wang et al. (2025).
+        </p>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // ---- Sidebar ----
+  function openSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebar.classList.add('open');
+    overlay.classList.remove('hidden');
+    requestAnimationFrame(() => overlay.classList.remove('opacity-0'));
+  }
+
+  function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebar.classList.remove('open');
+    overlay.classList.add('opacity-0');
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+  }
+
+  // ---- Decade Tabs ----
+  function showDecade(decade, btn) {
+    // Hide all panels
+    document.querySelectorAll('.decade-panel').forEach(p => p.classList.remove('active'));
+    // Deactivate all tab buttons
+    document.querySelectorAll('.decade-btn').forEach(b => b.classList.remove('active'));
+    // Show selected
+    document.getElementById('panel-' + decade).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
