@@ -3,21 +3,20 @@
 
 ---
 
-## 📚 A Corpus Linguistics Research
-
+## A Corpus Linguistics Research
 Presented to the Faculty of the College of Arts and Letters  
 Polytechnic University of the Philippines  
 Sta. Mesa, Manila  
 
 ---
 
-## 🎓 In Partial Fulfillment of the Requirements  
+## In Partial Fulfillment of the Requirements  
 for the Degree of  
 **Bachelor of Arts in English Language Studies**
 
 ---
 
-## 👩‍🎓 Researchers
+## Researchers
 
 - Apostol, Maybelle A.  
 - Darilay, Herchel  
