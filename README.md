@@ -1,5 +1,4 @@
-# What Is Love?  
-### A Diachronic Corpus-Based Analysis of Romantic Expression in Pop Song Lyrics Across Five Decades
+# What Is Love?: A Diachronic Corpus-Based Analysis of Romantic Expression in Pop Song Lyrics Across Five Decades
 
 ---
 
@@ -29,6 +28,6 @@ for the Degree of
 
 ---
 
-## 🏫 Section
+## Program, Year, & Section
 
 **AB ELS 3-5**
